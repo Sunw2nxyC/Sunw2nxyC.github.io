@@ -1,1 +1,64 @@
-<h1>WXY is the best!!!</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unix timestamp</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archive:ital,wght@0,400;0,700;1,400&display=swap">
+	<style>
+		body {
+			font-family: 'archive', sans-serif;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			margin: 0;
+			background-color: black;
+			color: white;
+		}
+		
+		#unix-timestamp {
+            font-size: 120px;
+            white-space: nowrap;
+            letter-spacing: 0;
+            caret-color: transparent;
+            text-align: left;
+            margin-left: 20px; /* Add margin for better readability, adjust as needed */
+            width: 1600px; /* Fixed width to prevent text jitter */
+            overflow: hidden; /* Hide any content that exceeds the specified width */
+        }
+		
+		.red-text {
+			color: red;
+		}
+	</style>
+</head>
+<body>
+<div id="unix-timestamp"></div>
+<script>
+function updateTimestamp() {
+    const now = new Date();
+    const timeString = now.toTimeString().split(' ')[0];
+    const unixTimestamp = Math.floor(Date.now() / 1000).toLocaleString();
+    const distanceToLimit = (2147483648 - Math.floor(Date.now() / 1000)).toLocaleString();
+    const Limit = (Math.floor(Date.now() / 1000) - 1693972800).toLocaleString();
+    const Limit2 = (13500000 - (Math.floor(Date.now() / 1000) - 1693972800)).toLocaleString();
+	
+    const startDate = new Date("2024-05-09");
+	const startDate2 = new Date("2023-09-05");
+	const startDate3 = new Date("2024-05-06");
+    const daysDifference = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+	const daysDifference2 = Math.floor((now - startDate2) / (1000 * 60 * 60 * 24));
+	const daysDifference3 = Math.floor((startDate3 - now) / (1000 * 60 * 60 * 24) * 10000) / 10000;
+	
+    // 使用 <span> 包裹需要变成红色的文本
+    const textContent = `<span class="red-text">DATE </span>SW11-3-${daysDifference}<br><span class="red-text">SED </span>${daysDifference2}<br><span class="red-text">TIME </span>${timeString}<br><span class="red-text">STUCK </span>${Limit}<br>WXY is the best!!!`;
+
+    document.getElementById('unix-timestamp').innerHTML = textContent;
+    setTimeout(updateTimestamp, 1000);
+}
+updateTimestamp();
+</script>
+
+</body>
+</html>
