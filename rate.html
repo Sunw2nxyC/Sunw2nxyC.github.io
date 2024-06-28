@@ -1,0 +1,57 @@
+<h1>Phigros官方赛海选分数计算器</h1>
+<form>
+  <div>
+    <label for="input1">第1首定数:</label>
+    <input type="number" id="input1" name="input1">
+    <label for="input2">第1首得分:</label>
+    <input type="number" id="input2" name="input2">
+    <span id="score1">单曲得分：0</span>
+  </div>
+  <div>
+    <label for="input3">第2首定数:</label>
+    <input type="number" id="input1" name="input1">
+    <label for="input4">第2首得分:</label>
+    <input type="number" id="input2" name="input2">
+    <span id="score2">单曲得分：0</span>
+  </div>
+  <div>
+    <label for="input5">第3首定数:</label>
+    <input type="number" id="input1" name="input1">
+    <label for="input6">第3首得分:</label>
+    <input type="number" id="input2" name="input2">
+    <span id="score3">单曲得分：0</span>
+  </div>
+  <div>
+    <span id="totalScore">总得分：0</span>
+  </div>
+</form>
+<script>
+  function calculateScore(inputScore, inputVolume) {
+    if (inputScore.value < 700000) {
+      return 0;
+    }
+    const score = (inputScore.value - 550000) / 450000;
+    return Math.pow(score, 2) * inputVolume.value;
+  }
+
+  function updateTotalScore() {
+    const score1 = parseFloat(document.getElementById('score1').textContent.replace('单曲得分：', '')) || 0;
+    const score2 = parseFloat(document.getElementById('score2').textContent.replace('单曲得分：', '')) || 0;
+    const score3 = parseFloat(document.getElementById('score3').textContent.replace('单曲得分：', '')) || 0;
+    const totalScore = score1 + score2 + score3;
+    document.getElementById('totalScore').textContent = '总得分：' + totalScore.toFixed(4);
+  }
+
+  document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.addEventListener('input', function() {
+      const parentDiv = input.parentElement;
+      const inputVolume = parentDiv.querySelector('input[name^="input"][name$="1"]');
+      const inputScore = parentDiv.querySelector('input[name^="input"][name$="2"]');
+      const scoreSpan = parentDiv.querySelector('span[id^="score"]');
+      if (inputVolume && inputScore && scoreSpan) {
+        scoreSpan.textContent = '单曲得分：' + calculateScore(inputScore, inputVolume).toFixed(4);
+      }
+      updateTotalScore();
+    });
+  });
+</script>
