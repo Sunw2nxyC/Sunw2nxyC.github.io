@@ -1,4 +1,4 @@
-<h1>Phigros官方赛海选分数计算器</h1>
+<h1>Phigros大师锦标赛 预选赛 评价分计算器</h1>
 <form>
   <div>
     <label for="song1rate">第1首实际难度:</label>
@@ -35,11 +35,11 @@
   }
 
   function updateTotalScore() {
-    const score1 = parseFloat(document.getElementById('score1').textContent.replace('单曲得分：', '')) || 0;
-    const score2 = parseFloat(document.getElementById('score2').textContent.replace('单曲得分：', '')) || 0;
-    const score3 = parseFloat(document.getElementById('score3').textContent.replace('单曲得分：', '')) || 0;
+    const score1 = parseFloat(document.getElementById('score1').textContent.replace('单曲评价分：', '')) || 0;
+    const score2 = parseFloat(document.getElementById('score2').textContent.replace('单曲评价分：', '')) || 0;
+    const score3 = parseFloat(document.getElementById('score3').textContent.replace('单曲评价分：', '')) || 0;
     const totalScore = score1 + score2 + score3;
-    document.getElementById('totalScore').textContent = '总得分：' + totalScore.toFixed(4);
+    document.getElementById('totalScore').textContent = '总评价分：' + totalScore.toFixed(4);
   }
 
   document.querySelectorAll('input[type="number"]').forEach(input => {
@@ -49,7 +49,7 @@
       const inputScore = parentDiv.querySelector('input[name="song1score"], input[name="song2score"], input[name="song3score"]');
       const scoreSpan = parentDiv.querySelector('span[id^="score"]');
       if (inputVolume && inputScore && scoreSpan) {
-        scoreSpan.textContent = '单曲得分：' + calculateScore(inputScore, inputVolume).toFixed(4);
+        scoreSpan.textContent = '单曲评价分：' + calculateScore(inputScore, inputVolume).toFixed(4);
       }
       updateTotalScore();
       updateTextOutput();
@@ -58,24 +58,30 @@
 
   function updateTextOutput() {
     const song1rate = document.getElementById('song1rate').value;
-    const song1score = document.getElementById('score1').textContent.replace('单曲得分：', '');
+	const song1acc = document.getElementById('song1score').value;
+    const song1score = document.getElementById('score1').textContent.replace('单曲评价分：', '');
     const song2rate = document.getElementById('song2rate').value;
-    const song2score = document.getElementById('score2').textContent.replace('单曲得分：', '');
+	const song2acc = document.getElementById('song2score').value;
+    const song2score = document.getElementById('score2').textContent.replace('单曲评价分：', '');
     const song3rate = document.getElementById('song3rate').value;
-    const song3score = document.getElementById('score3').textContent.replace('单曲得分：', '');
+	const song3acc = document.getElementById('song3score').value;
+    const song3score = document.getElementById('score3').textContent.replace('单曲评价分：', '');
     const totalScore = document.getElementById('totalScore').textContent;
 
     const textOutput = `
-    Phigros官方赛海选
+    Phigros大师锦标赛 预选赛 评价分
     第1首实际难度: ${song1rate}
-    第1首得分: ${song1score}
+    第1首得分: ${song1acc}
+    第1首评价分: ${song1score}
     第2首实际难度: ${song2rate}
-    第2首得分: ${song2score}
+    第2首得分: ${song2acc}
+    第2首评价分: ${song2score}
     第3首实际难度: ${song3rate}
-    第3首得分: ${song3score}
+    第3首得分: ${song3acc}
+    第3首评价分: ${song3score}
     ${totalScore}
     注：该得分用定数计算，但官方计算方式为“实际难度”，可能与定数有差别，仅供参考。
-	计算器：sunw2nxyc github io/rate html（空格替换为.）
+    计算器：sunw2nxyc github io/rate html（空格替换为.）
     `;
 
     document.getElementById('textOutput').textContent = textOutput;
