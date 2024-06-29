@@ -1,24 +1,24 @@
 <h1>Phigros官方赛海选分数计算器</h1>
 <form>
   <div>
-    <label for="input1">第1首定数:</label>
-    <input type="number" id="input1" name="input1">
-    <label for="input2">第1首得分:</label>
-    <input type="number" id="input2" name="input2">
+    <label for="song1rate">第1首实际难度:</label>
+    <input type="number" id="song1rate" name="song1rate" min="1" max="16.8">
+    <label for="song1score">第1首得分:</label>
+    <input type="number" id="song1score" name="song1score" min="0" max="1000000">
     <span id="score1">单曲得分：0</span>
   </div>
   <div>
-    <label for="input3">第2首定数:</label>
-    <input type="number" id="input1" name="input1">
-    <label for="input4">第2首得分:</label>
-    <input type="number" id="input2" name="input2">
+    <label for="song2rate">第2首实际难度:</label>
+    <input type="number" id="song2rate" name="song2rate" min="1" max="16.8">
+    <label for="song2score">第2首得分:</label>
+    <input type="number" id="song2score" name="song2score" min="0" max="1000000">
     <span id="score2">单曲得分：0</span>
   </div>
   <div>
-    <label for="input5">第3首定数:</label>
-    <input type="number" id="input1" name="input1">
-    <label for="input6">第3首得分:</label>
-    <input type="number" id="input2" name="input2">
+    <label for="song3rate">第3首实际难度:</label>
+    <input type="number" id="song3rate" name="song3rate" min="1" max="16.8">
+    <label for="song3score">第3首得分:</label>
+    <input type="number" id="song3score" name="song3score" min="0" max="1000000">
     <span id="score3">单曲得分：0</span>
   </div>
   <div>
@@ -45,13 +45,39 @@
   document.querySelectorAll('input[type="number"]').forEach(input => {
     input.addEventListener('input', function() {
       const parentDiv = input.parentElement;
-      const inputVolume = parentDiv.querySelector('input[name^="input"][name$="1"]');
-      const inputScore = parentDiv.querySelector('input[name^="input"][name$="2"]');
+      const inputVolume = parentDiv.querySelector('input[name="song1rate"], input[name="song2rate"], input[name="song3rate"]');
+      const inputScore = parentDiv.querySelector('input[name="song1score"], input[name="song2score"], input[name="song3score"]');
       const scoreSpan = parentDiv.querySelector('span[id^="score"]');
       if (inputVolume && inputScore && scoreSpan) {
         scoreSpan.textContent = '单曲得分：' + calculateScore(inputScore, inputVolume).toFixed(4);
       }
       updateTotalScore();
+      updateTextOutput();
     });
   });
+
+  function updateTextOutput() {
+    const song1rate = document.getElementById('song1rate').value;
+    const song1score = document.getElementById('score1').textContent.replace('单曲得分：', '');
+    const song2rate = document.getElementById('song2rate').value;
+    const song2score = document.getElementById('score2').textContent.replace('单曲得分：', '');
+    const song3rate = document.getElementById('song3rate').value;
+    const song3score = document.getElementById('score3').textContent.replace('单曲得分：', '');
+    const totalScore = document.getElementById('totalScore').textContent;
+
+    const textOutput = `
+      Phigros官方赛海选
+      第1首实际难度: ${song1rate}
+      第1首得分: ${song1score}
+      第2首实际难度: ${song2rate}
+      第2首得分: ${song2score}
+      第3首实际难度: ${song3rate}
+      第3首得分: ${song3score}
+      ${totalScore}
+      注：该得分用定数计算，但官方计算方式为“实际难度”，可能与定数有差别，仅供参考。
+    `;
+
+    document.getElementById('textOutput').textContent = textOutput;
+  }
 </script>
+<div id="textOutput" style="white-space: pre-wrap;"></div>
