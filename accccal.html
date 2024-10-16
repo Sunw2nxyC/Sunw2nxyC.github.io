@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACC计算器（q545awa是龙比）</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        select, input[type="number"] {
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ACC计算器（q545awa是龙比）</h1>
+    <div class="input-group">
+        <label for="resolution">键数：</label>
+        <select id="resolution" onchange="updateOptions()">
+            <option value="">选择键数</option>
+            <option value="4K">4K</option>
+            <option value="6K">6K</option>
+        </select>
+    </div>
+    <div class="input-group">
+        <label id="versionLabel" for="version">段位：</label>
+        <select id="version" onchange="updateSubOptions()">
+            <option value="">选择段位</option>
+        </select>
+    </div>
+    <div id="third-row" class="input-group" style="display: none;">
+        <label for="subVersion">段位：</label>
+        <select id="subVersion">
+            <option value="">选择段位</option>
+        </select>
+    </div>
+    <div id="acc-inputs">
+        <!-- 每首歌的准确度输入 -->
+        <div class="input-group">
+            <label for="acc1">第一首歌的ACC (%):</label>
+            <input type="number" id="acc1" step="0.01" placeholder="例如 96.04">
+        </div>
+        <div class="input-group">
+            <label for="acc2">第二首歌的ACC (%):</label>
+            <input type="number" id="acc2" step="0.01" placeholder="例如 96.17">
+        </div>
+        <div class="input-group">
+            <label for="acc3">第三首歌的ACC (%):</label>
+            <input type="number" id="acc3" step="0.01" placeholder="例如 97.00">
+        </div>
+        <div class="input-group">
+            <label for="acc4">第四首歌的ACC (%):</label>
+            <input type="number" id="acc4" step="0.01" placeholder="例如 98.50">
+        </div>
+    </div>
+    <button onclick="calculateIndividualAcc()">计算每首歌的ACC</button>
+    <div id="result">
+        <!-- 结果显示区域 -->
+    </div>
+
+    <footer>q545awa是龙比</footer>
+
+    <script>
+        const songData = {
+            "6K": {
+                "Sdan": [1185, 1583, 1289, 1299],
+                "1dan": [1520, 1705, 1595, 1385],
+                "2dan": [1677, 1396, 1820, 1634],
+                "3dan": [1982, 1696, 2090, 1590],
+                "4dan": [2251, 2359, 2316, 2002],
+                "5dan": [2334, 2316, 2196, 2409],
+                "6dan": [2772, 2380, 2951, 2053],
+                "7dan": [2614, 2120, 2752, 2782],
+                "8dan": [2683, 2449, 3001, 2052],
+                "9dan": [2958, 2407, 2780, 2975]
+            },
+            "4K": {
+                "v2": {
+                    "reg1": [40, 50, 60, 70],
+                    "reg2": [50, 60, 70, 80],
+                    "reg3": [60, 70, 80, 90],
+                    "reg4": [70, 80, 90, 100],
+                    "reg5": [80, 90, 100, 110],
+                    "reg6": [90, 100, 110, 120],
+                    "reg7": [100, 110, 120, 130],
+                    "reg8": [110, 120, 130, 140],
+                    "reg9": [120, 130, 140, 150],
+                    "reg10": [130, 140, 150, 160],
+                    "ex1": [140, 150, 160, 170],
+                    "ex2": [150, 160, 170, 180],
+                    "ex3": [160, 170, 180, 190],
+                    "ex4": [170, 180, 190, 200],
+                    "ex5": [180, 190, 200, 210],
+                    "ex6": [190, 200, 210, 220],
+                    "ex7": [200, 210, 220, 230],
+                    "ex8": [210, 220, 230, 240],
+                    "ex9": [220, 230, 240, 250],
+                    "exf": [230, 240, 250, 260]
+                },
+                "v3": {
+                    "reg0": [30, 40, 50, 60],
+                    "reg1": [40, 50, 60, 70],
+                    "reg2": [50, 60, 70, 80],
+                    "reg3": [60, 70, 80, 90],
+                    "reg4": [70, 80, 90, 100],
+                    "reg5": [80, 90, 100, 110],
+                    "reg6": [90, 100, 110, 120],
+                    "reg7": [100, 110, 120, 130],
+                    "reg8": [110, 120, 130, 140],
+                    "reg9": [120, 130, 140, 150],
+                    "reg10": [130, 140, 150, 160],
+                    "ex1": [140, 150, 160, 170],
+                    "ex2": [150, 160, 170, 180],
+                    "ex3": [160, 170, 180, 190],
+                    "ex4": [170, 180, 190, 200],
+                    "ex5": [180, 190, 200, 210],
+                    "ex6": [190, 200, 210, 220],
+                    "ex7": [200, 210, 220, 230],
+                    "ex8": [210, 220, 230, 240],
+                    "ex9": [220, 230, 240, 250],
+                    "exf": [230, 240, 250, 260]
+                }
+            }
+        };
+
+        function updateOptions() {
+            const resolution = document.getElementById("resolution").value;
+            const versionSelect = document.getElementById("version");
+            const subVersionSelect = document.getElementById("subVersion");
+            const thirdRow = document.getElementById("third-row");
+            const versionLabel = document.getElementById("versionLabel");
+
+            versionSelect.innerHTML = "";
+            subVersionSelect.innerHTML = "";
+            thirdRow.style.display = "none";
+
+            if (resolution === "4K") {
+                versionLabel.textContent = "版本：";
+                const options = ["v2", "v3"];
+                options.forEach(option => {
+                    const opt = document.createElement("option");
+                    opt.value = option;
+                    opt.textContent = option;
+                    versionSelect.appendChild(opt);
+                });
+                thirdRow.style.display = "block";
+            } else if (resolution === "6K") {
+                versionLabel.textContent = "段位：";
+                const options = ["Sdan", "1dan", "2dan", "3dan", "4dan", "5dan", "6dan", "7dan", "8dan", "9dan"];
+                options.forEach(option => {
+                    const opt = document.createElement("option");
+                    opt.value = option;
+                    opt.textContent = option;
+                    versionSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function updateSubOptions() {
+            const resolution = document.getElementById("resolution").value;
+            const version = document.getElementById("version").value;
+            const subVersionSelect = document.getElementById("subVersion");
+            subVersionSelect.innerHTML = "";
+
+            if (resolution === "4K" && (version === "v2" || version === "v3")) {
+                const subVersionOptions = Object.keys(songData[resolution][version]);
+                subVersionOptions.forEach(option => {
+                    const opt = document.createElement("option");
+                    opt.value = option;
+                    opt.textContent = option;
+                    subVersionSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function calculateIndividualAcc() {
+            const resolution = document.getElementById("resolution").value;
+            const version = document.getElementById("version").value;
+            const subVersion = document.getElementById("subVersion").value;
+            const accInputs = [
+                parseFloat(document.getElementById("acc1").value),
+                parseFloat(document.getElementById("acc2").value),
+                parseFloat(document.getElementById("acc3").value),
+                parseFloat(document.getElementById("acc4").value)
+            ];
+
+            const versionKey = resolution === "4K" ? songData[resolution][version][subVersion] : songData[resolution][version];
+            if (!versionKey) {
+                alert("请选择有效的段位。");
+                return;
+            }
+
+            const notes = versionKey;
+            const totalNotes = notes.reduce((a, b) => a + b, 0);
+            let previousNotesSum = 0;
+            let previousAccSum = 0;
+            const individualAcc = [];
+
+            for (let i = 0; i < accInputs.length; i++) {
+                const currentTotalNotes = previousNotesSum + notes[i];
+                const accSum = accInputs[i] * currentTotalNotes;
+                const currentIndividualAcc = ((accSum - previousAccSum) / notes[i]).toFixed(2);
+                individualAcc.push(currentIndividualAcc);
+                previousNotesSum = currentTotalNotes;
+                previousAccSum = accSum;
+            }
+
+            displayResults(individualAcc);
+        }
+
+        function displayResults(individualAcc) {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = "<h2>每首歌的ACC结果：</h2>";
+            individualAcc.forEach((acc, index) => {
+                resultDiv.innerHTML += `<p>第${index + 1}首歌：${acc}%</p>`;
+            });
+        }
+    </script>
+</body>
+</html>
